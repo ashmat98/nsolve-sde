@@ -21,7 +21,7 @@ struct randn
     {
         static std::mt19937 gen{ std::random_device{}() };
         static std::normal_distribution<double> dist(0,1);
-        return Eigen::MatrixXd{r, c}.unaryExpr([&](auto x) { return dist(gen); });
+        return Eigen::MatrixXd{r, c}.unaryExpr([&](double x) { return dist(gen); });
     }
 };
 
