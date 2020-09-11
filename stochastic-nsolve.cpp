@@ -58,7 +58,10 @@ Eigen::MatrixXd,Eigen::MatrixXd
             R.col(j) = r; E.col(j) = e;
         }
     }
-    return {move(X),move(V),move(R),move(E)};
+    return tuple<Eigen::MatrixXd,Eigen::MatrixXd,
+        Eigen::MatrixXd,Eigen::MatrixXd>{move(X),move(V),move(R),move(E)};
+//     return {X,V,R,E};
+//     return {move(X),move(V),move(R),move(E)};
 }
 
 tuple<
@@ -105,8 +108,15 @@ Eigen::MatrixXd,Eigen::MatrixXd
             EX.col(j) = ex;EY.col(j) = ey;
         }
     }
-    return {move(X),move(Y),move(VX),move(VY),
-            move(RX),move(RY),move(EX),move(EY)};
+    return tuple<Eigen::MatrixXd,Eigen::MatrixXd,
+                 Eigen::MatrixXd,Eigen::MatrixXd,
+                 Eigen::MatrixXd,Eigen::MatrixXd,
+                 Eigen::MatrixXd,Eigen::MatrixXd
+                >{move(X),move(Y),move(VX),move(VY),
+                  move(RX),move(RY),move(EX),move(EY)};
+//     return {X,Y,VX,VY,RX,RY,EX,EY};
+//     return {move(X),move(Y),move(VX),move(VY),
+//             move(RX),move(RY),move(EX),move(EY)};
 }
 
 
