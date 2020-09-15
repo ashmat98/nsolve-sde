@@ -60,8 +60,40 @@ Eigen::MatrixXd,Eigen::MatrixXd
     }
     return tuple<Eigen::MatrixXd,Eigen::MatrixXd,
         Eigen::MatrixXd,Eigen::MatrixXd>{move(X),move(V),move(R),move(E)};
-//     return {X,V,R,E};
-//     return {move(X),move(V),move(R),move(E)};
+}
+
+
+
+tuple<
+Eigen::MatrixXd,Eigen::MatrixXd,
+Eigen::MatrixXd> simulate_1d_only_memory(
+    Eigen::Ref<Eigen::VectorXd> x0, Eigen::Ref<Eigen::VectorXd> v0,
+    int N, int samples, double dt, int warmup, int skip,
+    double omega0, double gamma0, double kappa){
+    Eigen::MatrixXd x = x0, v=v0;
+    Eigen::MatrixXd r = Eigen::MatrixXd::Zero(samples,1);
+    // Eigen::MatrixXd e = Eigen::MatrixXd::Zero(samples,1);
+    randn rmg(samples,1);
+    int M = N/skip;
+    Eigen::MatrixXd  X(samples,M),  V(samples,M), 
+                    R(samples,M), E(samples,M);
+    double omega0_squared = omega0*omega0;
+    double gamma_kappa = gamma0*kappa;
+    double root_dt = sqrt(dt);
+
+    for (int i=-warmup;i<N;++i){
+        x  += v * dt;
+        v += (-r-omega0_squared*x)*dt + root_dt * rmg();
+        r += (- kappa * r + gamma_kappa*v)*dt;
+
+        if ((i>=0) && (i % skip == 0)){
+            int j= i/skip;
+            X.col(j) = x; V.col(j) = v;
+            R.col(j) = r; 
+        }
+    }
+    return tuple<Eigen::MatrixXd,Eigen::MatrixXd,
+        Eigen::MatrixXd>{move(X),move(V),move(R)};
 }
 
 tuple<
@@ -120,6 +152,50 @@ Eigen::MatrixXd,Eigen::MatrixXd
 }
 
 
+tuple<
+Eigen::MatrixXd,Eigen::MatrixXd
+,Eigen::MatrixXd,Eigen::MatrixXd,
+Eigen::MatrixXd,Eigen::MatrixXd
+> simulate_2d_only_memory(
+    Eigen::Ref<Eigen::VectorXd> x0, Eigen::Ref<Eigen::VectorXd> y0, 
+    Eigen::Ref<Eigen::VectorXd> vx0, Eigen::Ref<Eigen::VectorXd> vy0, 
+    int N, int samples, double dt, int warmup, int skip,
+    double omega0, double gamma0, double b, double kappa){
+    Eigen::MatrixXd x = x0, y = y0;
+    Eigen::MatrixXd vx = vx0, vy = vy0;
+    Eigen::MatrixXd rx = Eigen::MatrixXd::Zero(samples,1), ry = Eigen::MatrixXd::Zero(samples,1);
+    randn rmg(samples,1);
+    int M = N/skip;
+    Eigen::MatrixXd  X(samples,M),  Y(samples,M), 
+                    VX(samples,M), VY(samples,M),
+                    RX(samples,M), RY(samples,M);
+    double omega0_squared = omega0*omega0;
+    double gamma_kappa = gamma0*kappa;
+    double root_dt = sqrt(dt);
+
+    for (int i=-warmup;i<N;++i){
+        x  += vx * dt;
+        y  += vy * dt;
+        vx += (-rx-omega0_squared*x + b * vy)*dt + root_dt * rmg();
+        vy += (-ry-omega0_squared*y - b * vx)*dt + root_dt * rmg();
+        rx += (- kappa * rx + gamma_kappa*vx)*dt;
+        ry += (- kappa * ry + gamma_kappa*vy)*dt;
+
+        if ((i>=0) && (i % skip == 0)){
+            int j= i/skip;
+             X.col(j) = x;  Y.col(j) = y;
+            VX.col(j) = vx;VY.col(j) = vy;
+            RX.col(j) = rx;RY.col(j) = ry;
+        }
+    }
+    return tuple<Eigen::MatrixXd,Eigen::MatrixXd,
+                 Eigen::MatrixXd,Eigen::MatrixXd,
+                 Eigen::MatrixXd,Eigen::MatrixXd
+                >{move(X),move(Y),move(VX),move(VY),
+                  move(RX),move(RY)};
+}
+
+
 int add(int i, int j) {
     return i + j;
 }
@@ -136,6 +212,18 @@ PYBIND11_MODULE(nsdesolve, m) {
         "x0"_a, "v0"_a,
         "N"_a, "samples"_a=1,"dt"_a=0.001, "warmup"_a=0,"skip"_a=1, 
         "omega0"_a,"gamma0"_a, "theta"_a, "kappa"_a
+        , py::return_value_policy::reference_internal
+    );
+     m.def("simulate_1d_only_memory", &simulate_1d_only_memory, "1D simulation, only memory kernel",
+        "x0"_a, "v0"_a,
+        "N"_a, "samples"_a=1,"dt"_a=0.001, "warmup"_a=0,"skip"_a=1, 
+        "omega0"_a,"gamma0"_a, "kappa"_a
+        , py::return_value_policy::reference_internal
+    );
+    m.def("simulate_2d_only_memory", &simulate_2d_only_memory, "2D simulation, only memory kernel, magnetic field",
+        "x0"_a, "y0"_a, "vx0"_a, "vy0"_a, 
+        "N"_a, "samples"_a=1,"dt"_a=0.001, "warmup"_a=0,"skip"_a=1, 
+        "omega0"_a,"gamma0"_a, "b"_a, "kappa"_a
         , py::return_value_policy::reference_internal
     );
 }
