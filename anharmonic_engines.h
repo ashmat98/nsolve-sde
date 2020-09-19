@@ -69,6 +69,19 @@ Eigen::MatrixXd,Eigen::MatrixXd
 
 //////////////////////////////////////////
 
+Eigen::VectorXd U_2(double A, double B, double C, double D, double F,
+    const Eigen::VectorXd & x, const Eigen::VectorXd & y){
+    /// U(x,y) = V(x^2 + y^2)
+    /// V(r^2) = 1/4 B r^4 - 1/2 A r^2 + C cos(Fr) exp(-Dr^2)
+
+    Eigen::ArrayXd r_squared = x.array().square() + y.array().square();
+    Eigen::ArrayXd r = r_squared.sqrt();
+    // return (-1.0/2.0*A*r_squared).matrix();
+    return (1.0/4.0*B*r_squared*r_squared - 1.0/2.0*A*r_squared + 
+        C*Eigen::cos(F*r)*Eigen::exp(-D*r_squared)).matrix();
+}
+
+
 tuple<Eigen::VectorXd, Eigen::VectorXd> Uxy_2(double A, double B, double C, double D, double F,
 //                            Eigen::VectorXd x,  Eigen::VectorXd y){
     const Eigen::VectorXd & x, const Eigen::VectorXd & y){

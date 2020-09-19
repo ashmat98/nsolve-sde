@@ -61,4 +61,12 @@ PYBIND11_MODULE(nsdesolve, m) {
         "A"_a,"B"_a, "C"_a,"D"_a,"F"_a, "gamma0"_a, "b"_a, "kappa"_a
         , py::return_value_policy::reference_internal
     );
+    m.def("Uxy_2", &Uxy_2, "Nonlinear potential gradient",
+        "A"_a,"B"_a,"C"_a,"D"_a,"F"_a,"x"_a,"y"_a
+        , py::return_value_policy::reference_internal
+    );
+    m.def("U_2", &U_2, "Nonlinear potential gradient",
+        "A"_a,"B"_a,"C"_a,"D"_a,"F"_a,"x"_a,"y"_a
+        , py::return_value_policy::reference_internal
+    );
 }
