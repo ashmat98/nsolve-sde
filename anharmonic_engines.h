@@ -1,4 +1,4 @@
-# ifndef ANHARMONIC_H
+#ifndef ANHARMONIC_H
 #define ANHARMONIC_H 1
 
 #include <Eigen/Dense>
@@ -143,6 +143,60 @@ Eigen::MatrixXd,Eigen::MatrixXd
                  Eigen::MatrixXd,Eigen::MatrixXd
                 >{move(X),move(Y),move(VX),move(VY),
                   move(RX),move(RY)};
+}
+
+
+tuple<
+Eigen::MatrixXd,Eigen::MatrixXd
+,Eigen::MatrixXd,Eigen::MatrixXd
+> simulate_2d_anharmonic_multinoise(
+    Eigen::Ref<Eigen::VectorXd> x0, Eigen::Ref<Eigen::VectorXd> y0, 
+    Eigen::Ref<Eigen::VectorXd> vx0, Eigen::Ref<Eigen::VectorXd> vy0, 
+    int N, int samples, double dt, int warmup, int skip,
+    double A, double B, double C, double D, double F, 
+    double gamma0, double b, double kappa, double theta,
+    double q_colored, double q_white){
+    /**
+     * single friction with memory kernel described by gamma0, kappa
+     * and two fluctuation forces, colored noise with q=1 and
+     * white noise with q = q_qhite
+     **/
+    Eigen::MatrixXd x = x0, y = y0;
+    Eigen::MatrixXd vx = vx0, vy = vy0;
+    Eigen::MatrixXd rx = Eigen::MatrixXd::Zero(samples,1), ry = Eigen::MatrixXd::Zero(samples,1);
+    Eigen::MatrixXd ex = Eigen::MatrixXd::Zero(samples,1), ey = Eigen::MatrixXd::Zero(samples,1);
+
+    randn rmg(samples,1);
+    int M = N/skip;
+    Eigen::MatrixXd  X(samples,M),  Y(samples,M), 
+                    VX(samples,M), VY(samples,M);
+    double gamma_kappa = gamma0*kappa;
+    double root_dt_theta = sqrt(dt*theta*q_colored);
+    double root_q_dt = sqrt(q_white*dt);
+
+
+    for (int i=-warmup;i<N;++i){
+        x  += vx * dt;
+        y  += vy * dt;
+        tuple<Eigen::VectorXd, Eigen::VectorXd> uxy = Uxy_2(A,B,C,D,F,x,y);
+//         tuple<Eigen::VectorXd, Eigen::VectorXd> uxy = make_tuple(Eigen::MatrixXd::Zero(samples,1),Eigen::MatrixXd::Zero(samples,1));
+
+        vx += (-rx - get<0>(uxy) + b * vy + ex)*dt + root_q_dt * rmg();
+        vy += (-ry - get<1>(uxy) - b * vx + ey)*dt + root_q_dt * rmg();
+        rx += (- kappa * rx + gamma_kappa*vx)*dt;
+        ry += (- kappa * ry + gamma_kappa*vy)*dt;
+        ex += (-theta * ex) * dt + root_dt_theta * rmg();
+        ey += (-theta * ey) * dt + root_dt_theta * rmg();
+
+        if ((i>=0) && (i % skip == 0)){
+            int j= i/skip;
+             X.col(j) = x;  Y.col(j) = y;
+            VX.col(j) = vx;VY.col(j) = vy;
+        }
+    }
+    return tuple<Eigen::MatrixXd,Eigen::MatrixXd,
+                 Eigen::MatrixXd,Eigen::MatrixXd
+                >{move(X),move(Y),move(VX),move(VY)};
 }
 
 

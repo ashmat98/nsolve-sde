@@ -55,12 +55,24 @@ PYBIND11_MODULE(nsdesolve, m) {
         "A"_a,"B"_a, "gamma0"_a, "b"_a, "kappa"_a
         , py::return_value_policy::reference_internal
     );
-    m.def("simulate_2d_only_memory_anharmonic_2", &simulate_2d_only_memory_anharmonic_2, "2D simulation, only memory kernel, magnetic field, anharmonic potential #1",
+    m.def("simulate_2d_only_memory_anharmonic_2", &simulate_2d_only_memory_anharmonic_2, "2D simulation, only memory kernel, magnetic field, anharmonic potential #2",
         "x0"_a, "y0"_a, "vx0"_a, "vy0"_a, 
         "N"_a, "samples"_a=1,"dt"_a=0.001, "warmup"_a=0,"skip"_a=1, 
         "A"_a,"B"_a, "C"_a,"D"_a,"F"_a, "gamma0"_a, "b"_a, "kappa"_a
         , py::return_value_policy::reference_internal
     );
+    
+    m.def("simulate_2d_anharmonic_multinoise", 
+        &simulate_2d_anharmonic_multinoise, 
+        "2D simulation, memory kernel, colored and white noise, magnetic field, anharmonic potential #2",
+        "x0"_a, "y0"_a, "vx0"_a, "vy0"_a, 
+        "N"_a, "samples"_a=1,"dt"_a=0.001, "warmup"_a=0,"skip"_a=1, 
+        "A"_a,"B"_a, "C"_a,"D"_a,"F"_a, "gamma0"_a, "b"_a, "kappa"_a,
+        "theta"_a, "q_colored"_a, "q_white"_a
+        , py::return_value_policy::reference_internal
+    );
+
+
     m.def("Uxy_2", &Uxy_2, "Nonlinear potential gradient",
         "A"_a,"B"_a,"C"_a,"D"_a,"F"_a,"x"_a,"y"_a
         , py::return_value_policy::reference_internal
