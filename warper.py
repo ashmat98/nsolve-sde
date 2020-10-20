@@ -70,6 +70,19 @@ def simulate_2d_only_memory_anharmonic_1(pool=None,runs=1, **kwargs):
     )
     return [np.concatenate(single, axis=0) for single in zip(*result)]
 
+def _simulate_3d_only_memory_anharmonic_1_kwargs(kwargs):
+    return nsdesolve.simulate_3d_only_memory_anharmonic_1(**kwargs)
+
+def simulate_3d_only_memory_anharmonic_1(pool=None,runs=1, **kwargs):
+    if pool is None:
+        assert runs == 1
+        return _simulate_3d_only_memory_anharmonic_1_kwargs(kwargs)
+    
+    result = pool.map(_simulate_3d_only_memory_anharmonic_1_kwargs, 
+        [kwargs]*runs
+    )
+    return [np.concatenate(single, axis=0) for single in zip(*result)]
+
 
 def _simulate_2d_only_memory_anharmonic_2_kwargs(kwargs):
     return nsdesolve.simulate_2d_only_memory_anharmonic_2(**kwargs)

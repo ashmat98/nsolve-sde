@@ -21,7 +21,7 @@ Eigen::MatrixXd,Eigen::MatrixXd
     Eigen::MatrixXd r = Eigen::MatrixXd::Zero(samples,1);
     Eigen::MatrixXd e = Eigen::MatrixXd::Zero(samples,1);
     randn rmg(samples,1);
-    int M = N/skip;
+    int M = (N-1)/skip+1;
     Eigen::MatrixXd  X(samples,M),  V(samples,M), 
                     R(samples,M), E(samples,M);
     double omega0_squared = omega0*omega0;
@@ -56,7 +56,7 @@ Eigen::MatrixXd> simulate_1d_only_memory(
     Eigen::MatrixXd r = Eigen::MatrixXd::Zero(samples,1);
     // Eigen::MatrixXd e = Eigen::MatrixXd::Zero(samples,1);
     randn rmg(samples,1);
-    int M = N/skip;
+    int M = (N-1)/skip+1;
     Eigen::MatrixXd  X(samples,M),  V(samples,M), 
                     R(samples,M), E(samples,M);
     double omega0_squared = omega0*omega0;
@@ -95,7 +95,7 @@ Eigen::MatrixXd,Eigen::MatrixXd
     Eigen::MatrixXd rx = Eigen::MatrixXd::Zero(samples,1), ry = Eigen::MatrixXd::Zero(samples,1);
     Eigen::MatrixXd ex = Eigen::MatrixXd::Zero(samples,1), ey = Eigen::MatrixXd::Zero(samples,1);
     randn rmg(samples,1);
-    int M = N/skip;
+    int M = (N-1)/skip+1;
     Eigen::MatrixXd  X(samples,M),  Y(samples,M), 
                     VX(samples,M), VY(samples,M),
                     RX(samples,M), RY(samples,M),
@@ -147,7 +147,7 @@ Eigen::MatrixXd,Eigen::MatrixXd
     Eigen::MatrixXd vx = vx0, vy = vy0;
     Eigen::MatrixXd rx = Eigen::MatrixXd::Zero(samples,1), ry = Eigen::MatrixXd::Zero(samples,1);
     randn rmg(samples,1);
-    int M = N/skip;
+    int M = (N-1)/skip+1;
     Eigen::MatrixXd  X(samples,M),  Y(samples,M), 
                     VX(samples,M), VY(samples,M),
                     RX(samples,M), RY(samples,M);
