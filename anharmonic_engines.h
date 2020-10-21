@@ -11,10 +11,10 @@ tuple<Eigen::VectorXd, Eigen::VectorXd> Uxy_1(double A, double B,
 //                            Eigen::VectorXd x,  Eigen::VectorXd y){
     const Eigen::VectorXd & x, const Eigen::VectorXd & y){
     /// U(x,y) = V(x^2 + y^2)
-    /// V(r^2) = 1/4 B r^4 - 1/2 A r^2
+    /// V(r^2) = 1/4 B r^4 + 1/2 A r^2
     
     Eigen::ArrayXd r_squared = x.array().square() + y.array().square();
-    Eigen::ArrayXd common = (B*r_squared - A);
+    Eigen::ArrayXd common = (B*r_squared + A);
     Eigen::VectorXd ux = (x.array() * common).matrix();
     Eigen::VectorXd uy = (y.array() * common).matrix();
     return tuple<Eigen::VectorXd,Eigen::VectorXd>(move(ux),move(uy));
@@ -75,7 +75,7 @@ tuple<Eigen::VectorXd, Eigen::VectorXd, Eigen::VectorXd> Uxyz_1(double A, double
     /// V(r^2) = 1/4 B r^4 - 1/2 A r^2
     
     Eigen::ArrayXd r_squared = x.array().square() + y.array().square() + z.array().square();
-    Eigen::ArrayXd common = (B*r_squared - A);
+    Eigen::ArrayXd common = (B*r_squared + A);
     Eigen::VectorXd ux = (x.array() * common).matrix();
     Eigen::VectorXd uy = (y.array() * common).matrix();
     Eigen::VectorXd uz = (z.array() * common).matrix();
@@ -144,7 +144,7 @@ Eigen::VectorXd U_2(double A, double B, double C, double D, double F,
     Eigen::ArrayXd r_squared = x.array().square() + y.array().square();
     Eigen::ArrayXd r = r_squared.sqrt();
     // return (-1.0/2.0*A*r_squared).matrix();
-    return (1.0/4.0*B*r_squared*r_squared - 1.0/2.0*A*r_squared + 
+    return (1.0/4.0*B*r_squared*r_squared + 1.0/2.0*A*r_squared + 
         C*Eigen::cos(F*r)*Eigen::exp(-D*r_squared)).matrix();
 }
 
@@ -159,7 +159,7 @@ tuple<Eigen::VectorXd, Eigen::VectorXd> Uxy_2(double A, double B, double C, doub
     Eigen::ArrayXd r_squared = x.array().square() + y.array().square();
     Eigen::ArrayXd Fr = F*r_squared.sqrt();
 
-    Eigen::ArrayXd common = (B*r_squared - A)
+    Eigen::ArrayXd common = (B*r_squared + A)
         - Eigen::exp(-D*r_squared)*(2*C*D*Eigen::cos(Fr) - C*F*F*(EPS+Eigen::sin(Fr))/(EPS+Fr)) ;
     Eigen::VectorXd ux = (x.array() * common).matrix();
     Eigen::VectorXd uy = (y.array() * common).matrix();
