@@ -115,7 +115,7 @@ Eigen::MatrixXd,Eigen::MatrixXd,Eigen::MatrixXd
 
         vx += (-rx - get<0>(uxyz) + b * vy)*dt + root_dt * rmg();
         vy += (-ry - get<1>(uxyz) - b * vx)*dt + root_dt * rmg();
-        vz += (-rz - get<2>(uxyz) )*dt + root_dt * rmg();
+        vz += (-rz - get<2>(uxyz)         )*dt + root_dt * rmg();
         rx += (- kappa * rx + gamma_kappa*vx)*dt;
         ry += (- kappa * ry + gamma_kappa*vy)*dt;
         rz += (- kappa * rz + gamma_kappa*vz)*dt;
