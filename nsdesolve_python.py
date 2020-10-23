@@ -3,7 +3,6 @@ import numpy as np
 def Uxyz_1(A, B, x, y, z):
     ### U(x,y) = V(x^2 + y^2)
     ### V(r^2) = 1/4 B r^4 - 1/2 A r^2 + C cos(Fr) exp(-Dr^2)
-    EPS = 1e-7
 
     r_squared = np.square(x) + np.square(y) + np.square(z)
 
