@@ -1,5 +1,5 @@
 
-from warper import simulate_2d_only_memory, simulate_2d_only_memory_anharmonic_2, simulate_2d_only_memory_anharmonic_1, simulate_3d_only_memory_anharmonic_1
+from warper import simulate_2d_only_memory, simulate_2d_only_memory_anharmonic_2, simulate_2d_only_memory_anharmonic_1, simulate_3d_only_memory_anharmonic_1, simulate_2d_only_memory
 
 from matplotlib import pyplot as plt
 import numpy as np
@@ -40,5 +40,5 @@ def get_RSH_harmonic_onlyka(o0,g0,b,ka):
     
     return R,S,H, 2*(R*S+H**2)
 
-def mean_with_err(arr, axis):
+def mean_with_err(arr, axis=-1):
     return arr.mean(axis=axis), arr.std(axis=axis)/np.sqrt(arr.shape[axis])
