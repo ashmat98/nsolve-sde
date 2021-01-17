@@ -1,5 +1,5 @@
 
-from warper import simulate_2d_only_memory, simulate_2d_only_memory_anharmonic_2, simulate_2d_only_memory_anharmonic_1, simulate_3d_only_memory_anharmonic_1, simulate_2d_only_memory
+from warper import simulate_2d_only_memory, simulate_2d_only_memory_anharmonic_2, simulate_2d_only_memory_anharmonic_1, simulate_3d_only_memory_anharmonic_1, simulate_2d_only_memory,simulate_2d
 
 from matplotlib import pyplot as plt
 import numpy as np
@@ -43,6 +43,7 @@ def get_RSH_harmonic_onlyka(o0,g0,b,ka):
 def mean_with_err(arr, axis=-1):
     return arr.mean(axis=axis), arr.std(axis=axis)/np.sqrt(arr.shape[axis])
 
+
 def cardanoSolve(a,b,c,d):
     A = (c-b**2/3/a)/a
     B=(b*c/3/a-2*b**3/27/a**2-d)/a
@@ -58,6 +59,7 @@ def polyOmega(g0,ka,b,o0):
     return poly4(1,-(ka+1j*b),g0*ka+o0**2+1j*b*ka,-ka*o0**2)
 
 def rootsPolyOmega(g0,ka,b,o0):
+    
     return cardanoSolve(1,-(ka+1j*b),g0*ka+o0**2+1j*b*ka,-ka*o0**2)
 
 def SNRestimate(array):

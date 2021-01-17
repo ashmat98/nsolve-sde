@@ -86,7 +86,7 @@ Eigen::MatrixXd,Eigen::MatrixXd
 > simulate_2d(
     Eigen::Ref<Eigen::VectorXd> x0, Eigen::Ref<Eigen::VectorXd> y0, 
     Eigen::Ref<Eigen::VectorXd> vx0, Eigen::Ref<Eigen::VectorXd> vy0, 
-    int N, int samples, double dt, int warmup, int skip,
+    int N, int samples, double dt, int warmup, double warmup_dt, int skip,
     double omega0, double gamma0, double b, double theta, double kappa){
     Eigen::MatrixXd x = x0, y = y0;
     Eigen::MatrixXd vx = vx0, vy = vy0;
@@ -102,17 +102,23 @@ Eigen::MatrixXd,Eigen::MatrixXd
                     EX(samples,M), EY(samples,M);
     double omega0_squared = omega0*omega0;
     double gamma_kappa = gamma0*kappa;
-    double root_dt_theta = sqrt(dt) * theta;
+    double _dt = warmup_dt;
+    double root_dt_theta = sqrt(_dt*gamma0*2) * theta;
+    
 
     for (int i=-warmup;i<N;++i){
-        x  += vx * dt;
-        y  += vy * dt;
-        vx += (-rx-omega0_squared*x + b * vy + ex)*dt;
-        vy += (-ry-omega0_squared*y - b * vx + ey)*dt;
-        rx += (- kappa * rx + gamma_kappa*vx)*dt;
-        ry += (- kappa * ry + gamma_kappa*vy)*dt;
-        ex += (-theta * ex) * dt + root_dt_theta * rmg();
-        ey += (-theta * ey) * dt + root_dt_theta * rmg();
+        if (i==0){
+            _dt = dt;
+            root_dt_theta = sqrt(dt*gamma0*2) * theta;
+        }
+        x  += vx * _dt;
+        y  += vy * _dt;
+        vx += (-rx-omega0_squared*x + b * vy + ex)*_dt;
+        vy += (-ry-omega0_squared*y - b * vx + ey)*_dt;
+        rx += (- kappa * rx + gamma_kappa*vx)*_dt;
+        ry += (- kappa * ry + gamma_kappa*vy)*_dt;
+        ex += (-theta * ex) * _dt + root_dt_theta * rmg();
+        ey += (-theta * ey) * _dt + root_dt_theta * rmg();
 
         if ((i>=0) && (i % skip == 0)){
             int j= i/skip;

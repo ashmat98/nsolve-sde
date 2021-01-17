@@ -155,7 +155,7 @@ def _simulate_2d_kwargs(kwargs):
 def simulate_2d(pool=None,runs=1, **kwargs):
     if pool is None:
         assert runs == 1
-        return _simulate_2d_kwargs(kwargs)
+        return (x.astype("float32") for x in _simulate_2d_kwargs(kwargs))
     
     result = pool.map(_simulate_2d_kwargs, 
         [kwargs]*runs
