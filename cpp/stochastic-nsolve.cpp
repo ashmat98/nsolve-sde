@@ -7,6 +7,8 @@
 
 #include "harmonic_engines.h"
 #include "anharmonic_engines.h"
+#include "higher-order_engines.h"
+
 
 using namespace std;
 namespace py = pybind11;
@@ -31,6 +33,14 @@ PYBIND11_MODULE(nsdesolve, m) {
         "omega0"_a,"gamma0"_a, "b"_a, "theta"_a, "kappa"_a
         , py::return_value_policy::reference_internal
     );
+
+    m.def("simulate_2d_strong", &simulate_2d_strong, "2D simulation, colored noise, memory kernel, magnetic field",
+        "x0"_a, "y0"_a, "vx0"_a, "vy0"_a, 
+        "N"_a, "samples"_a=1,"dt"_a, "warmup"_a=0, "warmup_dt"_a=0,"skip"_a=1, 
+        "omega0"_a,"gamma0"_a, "b"_a, "theta"_a, "kappa"_a
+        , py::return_value_policy::reference_internal
+    );
+
     m.def("simulate_1d", &simulate_1d, "1D simulation, colored noise, memory kernel",
         "x0"_a, "v0"_a,
         "N"_a, "samples"_a=1,"dt"_a=0.001, "warmup"_a=0,"skip"_a=1, 

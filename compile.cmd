@@ -6,6 +6,6 @@ g++ -O2 -mavx2 -ffast-math -Wall -shared -std=c++14 -fPIC ^
 %PyINCLUDES% ^
 -IC:\mingw-w64\x86_64-8.1.0-posix-seh-rt_v6-rev0\mingw64\lib\gcc\x86_64-w64-mingw32\8.1.0\include\ ^
 -LC:\Users\Ashot\Miniconda3\libs ^
-stochastic-nsolve.cpp ^
+cpp\stochastic-nsolve.cpp ^
 -lpython38 ^
 -o nsdesolve%PyEXT%

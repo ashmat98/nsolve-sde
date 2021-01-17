@@ -163,5 +163,19 @@ def simulate_2d(pool=None,runs=1, **kwargs):
     return [np.concatenate(single, axis=0) for single in zip(*result)]
 
 
+def _simulate_2d_strong_kwargs(kwargs):
+    return nsdesolve.simulate_2d(**kwargs)
+
+def simulate_2d_strong(pool=None,runs=1, **kwargs):
+    if pool is None:
+        assert runs == 1
+        return (x.astype("float32") for x in _simulate_2d_strong_kwargs(kwargs))
+    
+    result = pool.map(_simulate_2d_strong_kwargs, 
+        [kwargs]*runs
+    )
+    return [np.concatenate(single, axis=0) for single in zip(*result)]
+
+
 # if __name__ == "__main__":
 #     simulate_1d()

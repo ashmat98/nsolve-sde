@@ -1,5 +1,5 @@
 
-from warper import simulate_2d_only_memory, simulate_2d_only_memory_anharmonic_2, simulate_2d_only_memory_anharmonic_1, simulate_3d_only_memory_anharmonic_1, simulate_2d_only_memory,simulate_2d
+from warper import simulate_2d_only_memory, simulate_2d_only_memory_anharmonic_2, simulate_2d_only_memory_anharmonic_1, simulate_3d_only_memory_anharmonic_1, simulate_2d_only_memory,simulate_2d, simulate_2d_strong
 
 from matplotlib import pyplot as plt
 import numpy as np
