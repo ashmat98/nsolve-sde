@@ -8,7 +8,7 @@ EPS=1e-8
 
 
 (b,o0,g0,ka,result, i_plots) = np.load(
-    "dumps\color-plot-g0100-ka10.0-o090.0-b1-dt1e-05.npy", allow_pickle=True)
+    "dumps\color-plot-g0100-ka1000.0-o01000.0-b1-dt1e-05.npy", allow_pickle=True)
 N=3000000
 dt=0.00001
 skip=1
@@ -38,8 +38,7 @@ f"root3    relaxation: {1/np.real(roots[2]):0.3f}s     rotation: {np.imag(roots[
 
 
 
-
-x,y,vx,vy,_,_ = result
+x,y,vx,vy,_,_ = result[:,:,N//30*5:]
 
 crosprod=(-x[:,1:]*y[:,:-1] + y[:,1:]*x[:,:-1])/(EPS+np.sqrt(x[:,1:]**2+y[:,1:]**2)*np.sqrt(x[:,:-1]**2+y[:,:-1]**2))
 phi = np.arcsin(crosprod).cumsum(axis=-1)
@@ -48,7 +47,7 @@ del crosprod
 start = 0*100
 TURNS = 0.0001
 OMEGA = abs(H/R)
-TURNS = OMEGA/2/np.pi* 0.3
+TURNS = OMEGA/2/np.pi* 0.05
 
 rang = int(2*3.14/OMEGA/dt * TURNS)
 path = 1
@@ -58,8 +57,11 @@ print(x.shape[1],rang, OMEGA,TURNS)
 
 st=1
 
-st1=30;print(rang, x.shape)
+st1=5*4;print(rang, x.shape)
+st2=200
 
+time = time[:N//30*1]
+phi = phi[:, :N//30*1]
 
 fig = plt.figure(figsize=(9,6), dpi=200)
 
@@ -67,13 +69,23 @@ plt.subplot(2,1,1)
 plt.gca().spines['right'].set_visible(False)
 plt.gca().spines['top'].set_visible(False)
 
-plt.plot(time[::1000,None],phi[:,::1000].T, lw=0.5, alpha=0.9);
-plt.plot([0, time[-1]], [0,time[-1]*H/R], c="k", ls="--", lw=2)
+plt.plot(time[::st2,None],phi[:,::st2].T, lw=0.5, alpha=0.9);
+plt.plot([0, time[-1]], [0,time[-1]*H/R], c="k", ls="--", lw=2, label="theoretical mean")
 # plt.plot([0, time[-1]], [0,0], c="k", ls="--", lw=1)
-plt.plot(time[::1000],phi[:,::1000].mean(axis=0), lw=3, c="b", ls="-.");
+plt.plot(time[::st2],phi[:,::st2].mean(axis=0), lw=3, c="b", ls="-.", label="sample mean");
+plt.legend()
 
 plt.xlabel("Time")
 plt.ylabel("Angle ($rad$)",labelpad=-8)
+
+
+x,y,vx,vy,_,_ = result
+
+crosprod=(-x[:,1:]*y[:,:-1] + y[:,1:]*x[:,:-1])/(EPS+np.sqrt(x[:,1:]**2+y[:,1:]**2)*np.sqrt(x[:,:-1]**2+y[:,:-1]**2))
+phi = np.arcsin(crosprod).cumsum(axis=-1)
+del crosprod
+
+
 
 N_plots = len(i_plots)
 for j, path in enumerate(i_plots):
@@ -104,5 +116,5 @@ for j, path in enumerate(i_plots):
     else:
         ax.set_yticklabels([])
 
-plt.savefig(f"./figuregen/paths-g0{g0}-ka{ka}-o0{o0}-b{b}.eps", bbox_inches = 'tight', pad_inches = 0.08)
-plt.savefig(f"./figuregen/paths-g0{g0}-ka{ka}-o0{o0}-b{b}.png", bbox_inches = 'tight', pad_inches = 0.08)
+plt.savefig(f"./figuregen/paths-g0{g0}-ka{ka}-o0{o0}-b{b} 2.eps", bbox_inches = 'tight', pad_inches = 0.08)
+plt.savefig(f"./figuregen/paths-g0{g0}-ka{ka}-o0{o0}-b{b} 2.png", bbox_inches = 'tight', pad_inches = 0.08)

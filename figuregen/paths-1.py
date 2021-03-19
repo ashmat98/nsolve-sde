@@ -104,4 +104,5 @@ for j, path in enumerate(i_plots):
     else:
         ax.set_yticklabels([])
 
-plt.savefig(f"./figuregen/paths-g0{g0}-ka{ka}-o0{o0}-b{b}.pdf", bbox_inches = 'tight', pad_inches = 0.08)
+plt.savefig(f"./figuregen/paths-g0{g0}-ka{ka}-o0{o0}-b{b}.eps", bbox_inches = 'tight', pad_inches = 0.08)
+plt.savefig(f"./figuregen/paths-g0{g0}-ka{ka}-o0{o0}-b{b}.png", bbox_inches = 'tight', pad_inches = 0.08)
