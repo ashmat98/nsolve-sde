@@ -43,6 +43,10 @@ def get_RSH_harmonic_onlyka(o0,g0,b,ka):
 def mean_with_err(arr, axis=-1):
     return arr.mean(axis=axis), arr.std(axis=axis)/np.sqrt(arr.shape[axis])
 
+def median_with_err(arr, axis=-1):
+    mu = np.median(arr,axis=axis)
+    return mu, np.mean(np.abs(arr-mu), axis=axis)
+
 
 def cardanoSolve(a,b,c,d):
     A = (c-b**2/3/a)/a
@@ -59,7 +63,6 @@ def polyOmega(g0,ka,b,o0):
     return poly4(1,-(ka+1j*b),g0*ka+o0**2+1j*b*ka,-ka*o0**2)
 
 def rootsPolyOmega(g0,ka,b,o0):
-    
     return cardanoSolve(1,-(ka+1j*b),g0*ka+o0**2+1j*b*ka,-ka*o0**2)
 
 def SNRestimate(array):
